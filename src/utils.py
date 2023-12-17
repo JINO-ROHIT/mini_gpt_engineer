@@ -4,6 +4,7 @@ import torch
 import re
 import os
 from init_prompts import *
+import os
 
 from colorama import init, Fore, Back, Style
 init(autoreset=True)
@@ -55,15 +56,17 @@ def create_readme(code_files):
 def load_model():
     model_name = "meta-llama/Llama-2-7b-chat-hf"
 
+    hf_token = os.environ.get("HF_TOKEN")
+
     tokenizer = AutoTokenizer.from_pretrained(model_name,
                                             use_fast = True,
-                                            token = 'enter your hf token here')
+                                            token = hf_token)
 
     streamer = TextStreamer(tokenizer, skip_special_tokens=True)
     model = AutoModelForCausalLM.from_pretrained(model_name,  
                                                 load_in_8bit=True,
                                                 device_map="auto",
-                                                token = 'enter your hf token here')
+                                                token = hf_token)
 
     pipeline = transformers.pipeline(
         "text-generation",
