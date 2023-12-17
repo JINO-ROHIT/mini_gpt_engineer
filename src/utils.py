@@ -53,33 +53,66 @@ def create_readme(code_files):
     readme_result = generate(readme_prompt, max_tokens = 2000)
     return readme_result[readme_result.find('[/INST]') + 7: - 7]
 
-def load_model():
-    model_name = "meta-llama/Llama-2-7b-chat-hf"
+def load_model(model_flag = "llama2_hf"):
+    ''' Recommended - Add a flag that will indicate the user choice of using model, can be implemented by keeping a setup or config file
+        Below is a sample implementation of users if they dont want to use LLAMA2 and rather want to opt for more open-source models.
+        Once the Flag is offset, we can extend this with a model_str param in the config file
 
-    hf_token = os.environ.get("HF_TOKEN")
+        **********************************************************************************************************************************************
+        Current Implementation : Using model_flag variable inside the function to determine the model to be chosen for generation of content
+        **********************************************************************************************************************************************
+        model_flag (str) : determines the model to be used by the function. Default Value - llama2_hf
+                                                                            Other Values - mistral_8x7b_instruct
+    '''
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name,
-                                            use_fast = True,
-                                            token = hf_token)
+    if model_flag == "llama2_hf":
+        model_name = "meta-llama/Llama-2-7b-chat-hf"
+        hf_token = os.environ.get("HF_TOKEN")
+        
+        tokenizer = AutoTokenizer.from_pretrained(model_name,
+                                                use_fast = True,
+                                                token = 'enter your hf token here')
 
-    streamer = TextStreamer(tokenizer, skip_special_tokens=True)
-    model = AutoModelForCausalLM.from_pretrained(model_name,  
-                                                load_in_8bit=True,
-                                                device_map="auto",
-                                                token = hf_token)
+        streamer = TextStreamer(tokenizer, skip_special_tokens=True)
+        model = AutoModelForCausalLM.from_pretrained(model_name,  
+                                                    load_in_8bit=True,
+                                                    device_map="auto",
+                                                    token = 'enter your hf token here')
 
-    pipeline = transformers.pipeline(
-        "text-generation",
-        model=model,
-        tokenizer = tokenizer,
-        torch_dtype=torch.float16,
-        streamer = streamer
-    )
-    print(Fore.GREEN + "Model is loaded" + Style.RESET_ALL)
+        pipeline = transformers.pipeline(
+            "text-generation",
+            model=model,
+            tokenizer = tokenizer,
+            torch_dtype=torch.float16,
+            streamer = streamer
+        )
+        print(Fore.GREEN + "Model is loaded" + Style.RESET_ALL)
 
-    return model, tokenizer, pipeline
+        return model, tokenizer, pipeline
+    
+    elif model_flag == "mistral_8x7b_instruct":
+        model_name = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 
-model, tokenizer, pipeline = load_model()
+        tokenizer = AutoTokenizer.from_pretrained(model_name,
+                                                use_fast = True)
+
+        streamer = TextStreamer(tokenizer, skip_special_tokens=True)
+        model = AutoModelForCausalLM.from_pretrained(model_name,  
+                                                    load_in_8bit=True, #load_in_4bit = True can be used if load_in_8bit fails
+                                                    device_map="auto")
+
+        pipeline = transformers.pipeline(
+            "text-generation",
+            model=model,
+            tokenizer = tokenizer,
+            torch_dtype=torch.float16,
+            streamer = streamer
+        )
+        print(Fore.GREEN + "Model is loaded" + Style.RESET_ALL)
+
+        return model, tokenizer, pipeline
+
+model, tokenizer, pipeline = load_model(model_flag="llama2_hf") #available options for model_flag = [llama2_hf, mistral_8x7b_instruct]
 
 def generate(prompt, max_tokens):
     sequences = pipeline(
