@@ -10,9 +10,7 @@ Mini GPT Engineer is a Python-based tool that automates code generation based on
 
 2. **Open Source Llama 7b:** Powered by the open-source llama 7b engine, Mini GPT Engineer leverages the latest advancements in natural language processing to understand and interpret user input effectively.
 
-3. **8-Bit Compatibility:** Mini GPT Engineer runs on the cutting-edge 8-bit architecture, ensuring compatibility with a wide range of systems.
-
-4. **Code Regeneration:** If you're not satisfied with the initially generated code files, Mini GPT Engineer allows you to provide feedback and regenerate the code files to better suit your requirements.
+3. **Code Regeneration:** If you're not satisfied with the initially generated code files, Mini GPT Engineer allows you to provide feedback and regenerate the code files to better suit your requirements.
 
 ## Getting Started
 
@@ -29,3 +27,6 @@ To run Mini GPT Engineer on your machine, follow these simple steps:
 4. Run the program using Python:
    ```bash
    python main.py
+
+### Feedback
+Your feedback is valuable! If you encounter any issues or have suggestions for improvement, please open an issue on GitHub.
