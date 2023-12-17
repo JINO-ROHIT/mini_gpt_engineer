@@ -4,6 +4,7 @@ import torch
 import re
 import os
 from init_prompts import *
+import os
 
 from colorama import init, Fore, Back, Style
 init(autoreset=True)
@@ -66,7 +67,8 @@ def load_model(model_flag = "llama2_hf"):
 
     if model_flag == "llama2_hf":
         model_name = "meta-llama/Llama-2-7b-chat-hf"
-
+        hf_token = os.environ.get("HF_TOKEN")
+        
         tokenizer = AutoTokenizer.from_pretrained(model_name,
                                                 use_fast = True,
                                                 token = 'enter your hf token here')
